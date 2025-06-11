@@ -1,73 +1,62 @@
 import streamlit as st
-# import random # おみくじで使用しないのでコメントアウト
 
-st.title("第4回 Pythonループと条件分岐 演習 (Streamlit)")
-st.write("以下の課題に挑戦してみましょう！")
+st.title("ラッキーアイテム診断アプリ")
+st.caption("星座を選んで、今日のラッキーアイテムを診断しましょう。")
 
-# --- 課題1: 持ち物チェックリスト (forループ) ---
-st.write("---")
-st.header("課題1: 🎒 持ち物チェックリスト")
-st.write("Pythonのリストと `for` ループを使って、持ち物リストをチェックボックスで表示しましょう。")
+st.markdown("---")
+st.subheader("ラッキーアイテム診断")
+st.write(" 星座を選ぶと、今日のラッキーアイテムとアドバイス、関連画像を表示するアプリを作成する。")
 
-# 持ち物リスト
-items = []
+# 星座のリスト
+constellations = [
+    "おひつじ座 🐏", "おうし座 🐂", "ふたご座 ♊️", "かに座 🦀", 
+    "しし座 🦁", "おとめ座 👧", "てんびん座 ⚖️", "さそり座 🦂", 
+    "いて座 ♐️", "やぎ座  🐐", "みずがめ座 🏺", "うお座 ♓️"
+]
 
-st.subheader("必須アイテム:")
+# ラッキーアイテムとアドバイス、画像の辞書
+lucky_items = {
+    "おひつじ座 🐏": {"item": "赤いペン", "advice": "直感で動いてOK！", "image": "red_pen.png"},
+    "おうし座 🐂": {"item": "観葉植物", "advice": "自然とのふれあいが吉。", "image": "plant.png"},
+    "ふたご座 ♊️": {"item": "スマホスタンド", "advice": "効率化が運を呼ぶ！", "image": "phone_stand.png"},
+    "かに座 🦀": {"item": "ジャスミンティー", "advice": "長い取り組みが一区切りつきそう", "image": "tea.png"},
+    "しし座 🦁": {"item": "サングラス", "advice": "目立つ行動で運気UP！", "image": "sunglasses.png"},
+    "おとめ座 👧": {"item": "手帳", "advice": "丁寧な計画が幸運を招く。", "image": "notebook.png"},
+    "てんびん座 ⚖️": {"item": "ハンドクリーム", "advice": "手のケアで魅力UP。", "image": "hand_cream.png"},
+    "さそり座 🦂": {"item": "香水", "advice": "香りで気分も運気も上昇。", "image": "perfume.png"},
+    "いて座 ♐️": {"item": "スニーカー", "advice": "アクティブな行動が吉。", "image": "sneakers.png"},
+    "やぎ座 🐐": {"item": "本", "advice": "知識の積み重ねが鍵。", "image": "book.png"},
+    "みずがめ座 🏺": {"item": "イヤホン", "advice": "自分だけの世界を楽しもう。", "image": "earphones.png"},
+    "うお座 ♓️": {"item": "アロマキャンドル", "advice": "癒しの時間を大切に。", "image": "aroma_candle.png"},
+}
 
-# --- ここに for ループを使って items の各要素を st.checkbox で表示するコードを書いてください ---
+# 星座選択
+selected_constellation = st.selectbox("あなたの星座を選んでください", constellations)
 
-# (ここにfor item in items: ... を書く)
+# 診断ボタン
+if st.button("今日のラッキーアイテムを診断する！"):
+    result = lucky_items.get(selected_constellation)
+    if result:
+        item = result["item"]
+        advice = result["advice"]
+        image_path = result["image"]
 
+        st.subheader(f"{selected_constellation}のあなたの今日のラッキーアイテムは「{item}」です！")
+        st.write("**アドバイス:**")
+        st.info(advice)
 
-# --- ここまで (課題1) ---
+  # 画像表示
+        try:
+            st.image(image_path, caption=f"{item}のイメージ", width=250)
+        except FileNotFoundError:
+            st.warning(f"画像ファイル ({image_path}) が見つかりません。")
+            st.image("https://via.placeholder.com/250x250/CCCCCC/FFFFFF?Text=No+Image", caption="画像準備中")
+        except Exception as e:
+            st.error(f"画像表示中にエラーが発生しました: {e}")     
+    
+       
 
-st.caption("ヒント: `for item in items:` でリスト要素を繰り返し、`st.checkbox(item)` で表示します。")
-
-# --- 課題2: 今日のコーデ提案 (if文) ---
-st.write("---")
-st.header("課題2: 👚 今日のコーデ提案")
-st.write("天気と気温を選んで、おすすめの服装を `if` 文で表示しましょう。")
-
-# 天気を選択
-weather = st.selectbox(
-    "今日の天気は？",
-    ("☀️ 晴れ", "☁️ 曇り", "☔ 雨")
-)
-
-# 気温を選択
-temperature = st.slider(
-    "予想最高気温は？ (°C)",
-    min_value=-5, max_value=40, value=25
-)
-
-# ボタン
-if st.button("コーデを提案する"):
-    st.write(f"天気: {weather}, 気温: {temperature}°C")
-    st.subheader("おすすめコーデ:")
-    # --- ここに if/elif/else を使って天気と気温に応じたメッセージを表示するコードを書いてください ---
-
-    # 例: if "晴れ" in weather and temperature >= 25: ...
-    #     elif "雨" in weather: ...
-    #     else: ...
-
-    # ＜考え方のヒント (箇条書き)＞
-    # - まず「天気」で大きく場合分け (if "晴れ" in weather: ... elif "曇り" in weather: ... else: ...)
-    # - 次に、それぞれの天気の中で「気温」でさらに場合分け (if temperature >= 25: ... elif temperature >= 15: ... else: ...)
-    # - どんなメッセージを表示するか？
-    #   - 晴れ & 25度以上 → 「半袖でOK！涼しい格好で！👒」
-    #   - 晴れ & 15度～24度 → 「長袖シャツがちょうどいいかも？😊」
-    #   - 晴れ & 15度未満 → 「ニットやジャケットが必要かも🧥」
-    #   - 曇り & 20度以上 → 「長袖Tシャツに羽織ものがあると安心🌥️」
-    #   - 曇り & 20度未満 → 「セーターや軽めのコートが良いかも」
-    #   - 雨 & 20度以上 → 「蒸し暑いかも？半袖に撥水の上着、傘必須！🌂」
-    #   - 雨 & 20度未満 → 「肌寒い雨。しっかり防寒と傘、防水の靴も！👢」
-
-    # (ここにif/elif/elseの条件分岐を書く)
+st.markdown("---")
 
 
-    # --- ここまで (課題2) ---
 
-st.caption("ヒント: `if \"晴れ\" in weather and temperature >= 25:` のように条件を組み合わせます。")
-
-st.write("---")
-st.info("解答例は `app_a.py` を見てください。") 
